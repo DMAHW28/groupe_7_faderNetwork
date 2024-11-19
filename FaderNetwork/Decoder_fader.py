@@ -74,7 +74,7 @@ if __name__ == "__main__":
     attributes = torch.randint(0, 2, (batch_size, num_attributes))  # Attributs binaires
 
     # Initialisation du décodeur
-    decoder = FaderDecoder(latent_dim=latent_dim, num_attributes=num_attributes)
+    decoder = Decoder(latent_dim=latent_dim, num_attributes=num_attributes)
 
     # Génération de l'image
     reconstructed_images = decoder(latent_code, attributes)
