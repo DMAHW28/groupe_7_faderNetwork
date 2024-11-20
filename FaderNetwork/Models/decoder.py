@@ -18,31 +18,31 @@ class Decoder(nn.Module) :
         # On code l'architecture
         # Architecture symétrique au Fader Encoder
         self.decoder = nn.Sequential(
-            nn.ConvTranspose2d(self.input_dim, 512, kernel_size=4, stride=2, padding=1),  # Up-sampling
+            nn.ConvTranspose2d(self.taille_entree, 512, kernel_size=4, stride=2, padding=1),  # Up-sampling
             nn.BatchNorm2d(512),
             nn.ReLU(inplace=True),
             
-            nn.ConvTranspose2d(512, 256, kernel_size=4, stride=2, padding=1),
+            nn.ConvTranspose2d(512 + 2 * attribut, 256, kernel_size=4, stride=2, padding=1),
             nn.BatchNorm2d(256),
             nn.ReLU(inplace=True),
             
-            nn.ConvTranspose2d(256, 128, kernel_size=4, stride=2, padding=1),
+            nn.ConvTranspose2d(256 + 2 * attribut, 128, kernel_size=4, stride=2, padding=1),
             nn.BatchNorm2d(128),
             nn.ReLU(inplace=True),
             
-            nn.ConvTranspose2d(128, 64, kernel_size=4, stride=2, padding=1),
+            nn.ConvTranspose2d(128 + 2 * attribut, 64, kernel_size=4, stride=2, padding=1),
             nn.BatchNorm2d(64),
             nn.ReLU(inplace=True),
             
-            nn.ConvTranspose2d(64, 32, kernel_size=4, stride=2, padding=1),
+            nn.ConvTranspose2d(64 + 2 * attribut, 32, kernel_size=4, stride=2, padding=1),
             nn.BatchNorm2d(32),
             nn.ReLU(inplace=True),
             
-            nn.ConvTranspose2d(32, 16, kernel_size=4, stride=2, padding=1),
+            nn.ConvTranspose2d(32 + 2 * attribut, 16, kernel_size=4, stride=2, padding=1),
             nn.BatchNorm2d(16),
             nn.ReLU(inplace=True),
             
-            nn.ConvTranspose2d(16, 3, kernel_size=4, stride=2, padding=1),  # Dernière couche : 3 canaux (RGB)
+            nn.ConvTranspose2d(16 + 2 * attribut, 3, kernel_size=4, stride=2, padding=1),  # Dernière couche
             nn.Tanh()  # Normalisation de la sortie dans [-1, 1]
         )
 
