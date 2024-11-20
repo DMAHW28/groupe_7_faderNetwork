@@ -50,6 +50,7 @@ class Decoder(nn.Module) :
         # Le but est d'avoir un vecteur [1, 0] ou [0, 1]
         attributes_onehot = torch.cat([attributes, 1 - attributes], dim=1) 
         attributes_onehot = attributes_onehot.unsqueeze(2).unsqueeze(3)  
+        attributes_onehot = attributes_onehot.expand(-1, -1, latent_code.size(2), latent_code.size(3))
         
         # On ajoute les attributs au code latent
         decoder_input = torch.cat([latent_code, attributes_onehot], dim=1)  
