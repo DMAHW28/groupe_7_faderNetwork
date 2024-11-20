@@ -11,14 +11,11 @@ class Decoder(nn.Module) :
     def __init__(self, dim = 512, attribut = 10) :
 
         super(Decoder, self).__init__()
-
-        # Taille entrée
-        self.taille_entree = dim + 2 * attribut
-
+        
         # On code l'architecture
-        # Architecture symétrique au Fader Encoder
+        # Architecture symétrique au Fader Encoder et on utilise une entrée de dim + 2n avec n le nbre d'attribut
         self.decoder = nn.Sequential(
-            nn.ConvTranspose2d(self.taille_entree, 512, kernel_size=4, stride=2, padding=1),  # Up-sampling
+            nn.ConvTranspose2d(dim + 2 * attribut, 512, kernel_size=4, stride=2, padding=1),  # Up-sampling
             nn.BatchNorm2d(512),
             nn.ReLU(inplace=True),
             
@@ -49,19 +46,19 @@ class Decoder(nn.Module) :
 
     def forward(self, latent_code, attributes):
        
-        # Concaténer les attributs codés en one-hot au latent_code
+        # On concaténe les attributs codés en one-hot au latent_code
         attributes_onehot = torch.cat([attributes, 1 - attributes], dim=1)  # Taille : (batch_size, 2*num_attributes)
-        attributes_onehot = attributes_onehot.unsqueeze(2).unsqueeze(3)  # Ajouter des dimensions spatiales
+        attributes_onehot = attributes_onehot.unsqueeze(2).unsqueeze(3)  
         attributes_onehot = attributes_onehot.expand(-1, -1, latent_code.size(2), latent_code.size(3))  # Diffusion
         
-        # Ajouter les attributs au code latent
+        # On ajoute les attributs au code latent
         decoder_input = torch.cat([latent_code, attributes_onehot], dim=1)  # Taille : (batch_size, 512 + 2*num_attributes, H, W)
         
-        # Passer dans le décodeur
+        # On passe dans le décodeur
         output = self.decoder(decoder_input)
         return output
 
-# Exemple d'utilisation
+# Provisoire
 if __name__ == "__main__":
     # Paramètres
     latent_dim = 512
@@ -69,7 +66,7 @@ if __name__ == "__main__":
     batch_size = 8
     image_size = 256
 
-    # Dummy inputs
+    # Input provisoire
     latent_code = torch.randn(batch_size, latent_dim, 2, 2)  # Taille latente
     attributes = torch.randint(0, 2, (batch_size, num_attributes))  # Attributs binaires
 
