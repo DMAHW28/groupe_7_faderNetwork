@@ -49,7 +49,6 @@ class Decoder(nn.Module) :
         # On concaténe les attributs codés en one-hot au latent_code
         attributes_onehot = torch.cat([attributes, 1 - attributes], dim=1)  # Taille : (batch_size, 2*num_attributes)
         attributes_onehot = attributes_onehot.unsqueeze(2).unsqueeze(3)  
-        attributes_onehot = attributes_onehot.expand(-1, -1, latent_code.size(2), latent_code.size(3))  # Diffusion
         
         # On ajoute les attributs au code latent
         decoder_input = torch.cat([latent_code, attributes_onehot], dim=1)  # Taille : (batch_size, 512 + 2*num_attributes, H, W)
