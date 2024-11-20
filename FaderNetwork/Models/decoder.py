@@ -47,11 +47,12 @@ class Decoder(nn.Module) :
     def forward(self, latent_code, attributes):
        
         # On concaténe les attributs codés en one-hot au latent_code
-        attributes_onehot = torch.cat([attributes, 1 - attributes], dim=1)  # Taille : (batch_size, 2*num_attributes)
+        # Le but est d'avoir un vecteur [1, 0] ou [0, 1]
+        attributes_onehot = torch.cat([attributes, 1 - attributes], dim=1) 
         attributes_onehot = attributes_onehot.unsqueeze(2).unsqueeze(3)  
         
         # On ajoute les attributs au code latent
-        decoder_input = torch.cat([latent_code, attributes_onehot], dim=1)  # Taille : (batch_size, 512 + 2*num_attributes, H, W)
+        decoder_input = torch.cat([latent_code, attributes_onehot], dim=1)  
         
         # On passe dans le décodeur
         output = self.decoder(decoder_input)
@@ -62,7 +63,7 @@ if __name__ == "__main__":
     # Paramètres
     latent_dim = 512
     num_attributes = 10
-    batch_size = 8
+    batch_size = 32
     image_size = 256
 
     # Input provisoire
@@ -74,4 +75,4 @@ if __name__ == "__main__":
 
     # Génération de l'image
     reconstructed_images = decoder(latent_code, attributes)
-    print(f"Taille des images reconstruites : {reconstructed_images.shape}")  # (batch_size, 3, 256, 256)
+    print(f"Taille des images reconstruites : {reconstructed_images.shape}")  
