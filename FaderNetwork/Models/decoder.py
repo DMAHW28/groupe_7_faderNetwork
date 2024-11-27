@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 
 # On crée la classe Décoder
-# CLass Décoder 
+
 class Decoder(nn.Module) :
     def __init__(self, dim = 512, attribut = 10) :
 
@@ -15,41 +15,37 @@ class Decoder(nn.Module) :
         # On code l'architecture en suivant les paramètres pris par l'article comme la taille du kernel, du stride...
         # Architecture symétrique au Fader Encoder et on utilise une entrée de dim + 2n avec n le nbre d'attribut
         self.decoder = nn.Sequential(
-            nn.ConvTranspose2d(dim + 2 * attribut, 512 + 2 * attribut, kernel_size=4, stride=2, padding=1),  
-            nn.BatchNorm2d(512),
-            nn.ReLU(inplace=True),
-
-            nn.ConvTranspose2d(512 + 2 * attribut, 512 + 2 * attribut, kernel_size=4, stride=2, padding=1),  
-            nn.BatchNorm2d(512),
+            nn.ConvTranspose2d(dim + 2 * attribut, 512 + 2 * attribut, kernel_size=4, stride=2, padding=1),
+            nn.BatchNorm2d(512 + 2 * attribut),
             nn.ReLU(inplace=True),
             
             nn.ConvTranspose2d(512 + 2 * attribut, 256 + 2 * attribut, kernel_size=4, stride=2, padding=1),
-            nn.BatchNorm2d(256),
+            nn.BatchNorm2d(256 + 2 * attribut),
             nn.ReLU(inplace=True),
             
             nn.ConvTranspose2d(256 + 2 * attribut, 128 + 2 * attribut, kernel_size=4, stride=2, padding=1),
-            nn.BatchNorm2d(128),
+            nn.BatchNorm2d(128 + 2 * attribut),
             nn.ReLU(inplace=True),
             
             nn.ConvTranspose2d(128 + 2 * attribut, 64 + 2 * attribut, kernel_size=4, stride=2, padding=1),
-            nn.BatchNorm2d(64),
+            nn.BatchNorm2d(64 + 2 * attribut),
             nn.ReLU(inplace=True),
             
             nn.ConvTranspose2d(64 + 2 * attribut, 32 + 2 * attribut, kernel_size=4, stride=2, padding=1),
-            nn.BatchNorm2d(32),
+            nn.BatchNorm2d(32 + 2 * attribut),
             nn.ReLU(inplace=True),
             
             nn.ConvTranspose2d(32 + 2 * attribut, 16 + 2 * attribut, kernel_size=4, stride=2, padding=1),
-            nn.BatchNorm2d(16),
+            nn.BatchNorm2d(16 + 2 * attribut),
             nn.ReLU(inplace=True),
             
-          #  nn.ConvTranspose2d(16 + 2 * attribut, 3, kernel_size=4, stride=2, padding=1),  # Dernière couche
+            nn.ConvTranspose2d(16 + 2 * attribut, 3, kernel_size=4, stride=2, padding=1),  # Dernière couche
             nn.Tanh()  # Normalisation de la sortie dans [-1, 1]
         )
 
     # On definition le fonction forward qui définit le déroulé dans le décodeur  
     def forward(self, latent_code, attributes):
-       
+
         # On concaténe les attributs codés en one-hot au latent_code
         # Le but est d'avoir un vecteur [1, 0] ou [0, 1]
         attributes_onehot = torch.cat([attributes, 1 - attributes], dim=1) 

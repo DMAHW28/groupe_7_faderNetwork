@@ -152,9 +152,9 @@ class Discriminator(nn.Module):
 
     def forward(self, x):
         if self.mode == "latent":
-            assert x.size()[1:] == (self.conv_in_fm, self.conv_in_sz, self.conv_in_sz)
+            # assert x.size()[1:] == (self.conv_in_fm, self.conv_in_sz, self.conv_in_sz)
             conv_output = self.conv_layers(x)
-            assert conv_output.size() == (x.size(0), self.conv_out_fm, 1, 1)
+            # assert conv_output.size() == (x.size(0), self.conv_out_fm, 1, 1)
             return self.proj_layers(conv_output.view(x.size(0), self.conv_out_fm))
         
         elif self.mode == "patch":

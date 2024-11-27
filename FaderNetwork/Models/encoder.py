@@ -32,7 +32,7 @@ class Encoder(nn.Module):
             nn.BatchNorm2d(512),
             nn.LeakyReLU(0.2, inplace=True),
             # C512 4 -> 2
-            nn.Conv2d(512, 512, kernel_size=4, stride=2, padding=1), 
+            nn.Conv2d(512, 512, kernel_size=4, stride=2, padding=1),
             nn.BatchNorm2d(512),
             nn.LeakyReLU(0.2, inplace=True)
         )
