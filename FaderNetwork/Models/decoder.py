@@ -18,6 +18,10 @@ class Decoder(nn.Module) :
             nn.ConvTranspose2d(dim + 2 * attribut, 512 + 2 * attribut, kernel_size=4, stride=2, padding=1),  
             nn.BatchNorm2d(512),
             nn.ReLU(inplace=True),
+
+            nn.ConvTranspose2d(512 + 2 * attribut, 512 + 2 * attribut, kernel_size=4, stride=2, padding=1),  
+            nn.BatchNorm2d(512),
+            nn.ReLU(inplace=True),
             
             nn.ConvTranspose2d(512 + 2 * attribut, 256 + 2 * attribut, kernel_size=4, stride=2, padding=1),
             nn.BatchNorm2d(256),
@@ -39,7 +43,7 @@ class Decoder(nn.Module) :
             nn.BatchNorm2d(16),
             nn.ReLU(inplace=True),
             
-            nn.ConvTranspose2d(16 + 2 * attribut, 3 + 2 * attribut, kernel_size=4, stride=2, padding=1),  # Dernière couche
+          #  nn.ConvTranspose2d(16 + 2 * attribut, 3, kernel_size=4, stride=2, padding=1),  # Dernière couche
             nn.Tanh()  # Normalisation de la sortie dans [-1, 1]
         )
 
