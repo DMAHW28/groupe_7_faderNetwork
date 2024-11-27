@@ -15,31 +15,31 @@ class Decoder(nn.Module) :
         # On code l'architecture en suivant les paramètres pris par l'article comme la taille du kernel, du stride...
         # Architecture symétrique au Fader Encoder et on utilise une entrée de dim + 2n avec n le nbre d'attribut
         self.decoder = nn.Sequential(
-            nn.ConvTranspose2d(dim + 2 * attribut, 512, kernel_size=4, stride=2, padding=1),  
+            nn.ConvTranspose2d(dim + 2 * attribut, 512 + 2 * attribut, kernel_size=4, stride=2, padding=1),  
             nn.BatchNorm2d(512),
             nn.ReLU(inplace=True),
             
-            nn.ConvTranspose2d(512 + 2 * attribut, 256, kernel_size=4, stride=2, padding=1),
+            nn.ConvTranspose2d(512 + 2 * attribut, 256 + 2 * attribut, kernel_size=4, stride=2, padding=1),
             nn.BatchNorm2d(256),
             nn.ReLU(inplace=True),
             
-            nn.ConvTranspose2d(256 + 2 * attribut, 128, kernel_size=4, stride=2, padding=1),
+            nn.ConvTranspose2d(256 + 2 * attribut, 128 + 2 * attribut, kernel_size=4, stride=2, padding=1),
             nn.BatchNorm2d(128),
             nn.ReLU(inplace=True),
             
-            nn.ConvTranspose2d(128 + 2 * attribut, 64, kernel_size=4, stride=2, padding=1),
+            nn.ConvTranspose2d(128 + 2 * attribut, 64 + 2 * attribut, kernel_size=4, stride=2, padding=1),
             nn.BatchNorm2d(64),
             nn.ReLU(inplace=True),
             
-            nn.ConvTranspose2d(64 + 2 * attribut, 32, kernel_size=4, stride=2, padding=1),
+            nn.ConvTranspose2d(64 + 2 * attribut, 32 + 2 * attribut, kernel_size=4, stride=2, padding=1),
             nn.BatchNorm2d(32),
             nn.ReLU(inplace=True),
             
-            nn.ConvTranspose2d(32 + 2 * attribut, 16, kernel_size=4, stride=2, padding=1),
+            nn.ConvTranspose2d(32 + 2 * attribut, 16 + 2 * attribut, kernel_size=4, stride=2, padding=1),
             nn.BatchNorm2d(16),
             nn.ReLU(inplace=True),
             
-            nn.ConvTranspose2d(16 + 2 * attribut, 3, kernel_size=4, stride=2, padding=1),  # Dernière couche
+            nn.ConvTranspose2d(16 + 2 * attribut, 3 + 2 * attribut, kernel_size=4, stride=2, padding=1),  # Dernière couche
             nn.Tanh()  # Normalisation de la sortie dans [-1, 1]
         )
 
