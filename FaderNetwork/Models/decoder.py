@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 
 # On crée la classe Décoder
-
+# CLass Décoder 
 class Decoder(nn.Module) :
     def __init__(self, dim = 512, attribut = 10) :
 
