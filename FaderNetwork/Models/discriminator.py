@@ -22,7 +22,7 @@ def build_layers(img_sz, img_fm, init_fm, max_fm, n_layers, n_attr, n_skip,
 
     n_in = img_fm
     n_out = init_fm
-
+    print(n_layers)
     for i in range(n_layers):
         enc_layer = []
         dec_layer = []
@@ -88,7 +88,7 @@ class Discriminator(nn.Module):
             self.n_layers = params.n_layers
             self.n_skip = params.n_skip
             self.dropout = params.lat_dis_dropout
-            self.n_dis_layers = int(torch.log2(torch.tensor(self.img_sz)).item())
+            self.n_dis_layers = 1# int(torch.log2(torch.tensor(self.img_sz)).item())
             self.conv_in_sz = self.img_sz / (2 ** (self.n_layers - self.n_skip))
             self.conv_in_fm = min(self.init_fm * (2 ** (self.n_layers - self.n_skip - 1)), self.max_fm)
             self.conv_out_fm = min(self.init_fm * (2 ** (self.n_dis_layers - 1)), self.max_fm)

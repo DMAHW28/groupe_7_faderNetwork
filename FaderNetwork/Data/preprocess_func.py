@@ -9,13 +9,8 @@ N_IMAGES = 202599
 IMG_SIZE = 256
 DATA_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'Data')
 
-def preprocess_images(data_num, data_index, batch_size=1000):
-    IMG_PATH = f'images_{data_num}.pth'
+def preprocess_images(data_index, batch_size=1000):
     start, stop = data_index
-    # if os.path.isfile(os.path.join(DATA_PATH, IMG_PATH)):
-        # print(f"{IMG_PATH} exists, nothing to do.")
-        # return
-
     print(f"Processing images from index {start + 1} to {stop} ...")
     all_images = []
     for batch_start in tqdm(range(start + 1, stop + 1, batch_size), desc="Processing in batches"):
@@ -29,56 +24,41 @@ def preprocess_images(data_num, data_index, batch_size=1000):
         for image in raw_images:
             resized_image = cv2.resize(image, (IMG_SIZE, IMG_SIZE), interpolation=cv2.INTER_AREA)
             tensor_image = torch.tensor(resized_image, dtype=torch.float32).permute(2, 0, 1) / 255.0
-            all_images.append(tensor_image)
+            all_images.append(2*tensor_image - 1)
     data = torch.stack(all_images)
-
-    # print(f"Saving images to {IMG_PATH} ...")
-    # torch.save(data, os.path.join(DATA_PATH, IMG_PATH))
     return data
 
-def preprocess_attributes(data_num, data_index):
-    ATTR_PATH = f'attributes_{data_num}.pth'
-    # if os.path.isfile(os.path.join(DATA_PATH, ATTR_PATH)):
-        # print("%s exists, nothing to do." % ATTR_PATH)
-        # return
+def preprocess_attributes(data_index):
     start, stop = data_index
     n_images = stop - start
     attr_lines = [line.rstrip() for line in open(os.path.join(DATA_PATH, 'list_attr_celeba.txt'), 'r')]
     attr_keys = attr_lines[1].split()
+    attr_position = {}
     attributes = np.zeros((n_images, len(attr_keys)), dtype=bool)
     print(f"Processing attributes from index {start + 1} to {stop} ...")
     for i, line in tqdm(enumerate(attr_lines[2+start:stop]), desc="Processing Attibute"):
         split = line.split()
         for j, value in enumerate(split[1:]):
             attributes[i, j] = value == '1'
+            if i == 0:
+                attr_position[attr_keys[j]] = j
     attributes = torch.tensor(attributes.astype(int), dtype=torch.float32)
-    print("Saving attributes to %s ..." % ATTR_PATH)
-    # torch.save(attributes, os.path.join(DATA_PATH, ATTR_PATH))
-    return attributes
+    return attributes, attr_position
 
-def load_images(data_num, batch_size, load = True):
+def load_images(index = (0, 10000), batch_size = 32):
     """
     Load celebA dataset.
     """
-    if load:
-    # load data
-        images = torch.load(os.path.join(DATA_PATH, f'images_{data_num}.pth'), weights_only=True)
-        attributes = torch.load(os.path.join(DATA_PATH, f'attributes_{data_num}.pth'), weights_only=True)
-    else:
-        print("Not load")
-        step = 10000
-        index = (0, step)
-        images = preprocess_images(0, index)
-        attributes = preprocess_attributes(0, index)
+    images = preprocess_images(index)
+    attributes,  attr_position = preprocess_attributes(index)
     images, attributes = split_data_for_learning(images, attributes)
-    # display_images(images[0])
     base_data_loader = create_data_loader(images, attributes, batch_size=batch_size)
-    return base_data_loader
+    return base_data_loader, attr_position
 
 def split_data_for_learning(images, attributes):
-    train_index = 5000
-    valid_index = 7500
-    test_index = 10000
+    train_index = images.size(0) // 2
+    valid_index =(3 * images.size(0)) // 4
+    test_index = images.size(0)
     train_images = images[:train_index]
     valid_images = images[train_index:valid_index]
     test_images = images[valid_index:test_index]
@@ -106,3 +86,10 @@ def create_data_file():
     for i, index in enumerate(indexes):
         preprocess_images(i, index, batch_size=batch_size)
         preprocess_attributes(i, index)
+
+def categorical_y(y, n_classes=2):
+    batch_size, n_attr = y.size()
+    y_cat = torch.zeros(batch_size, n_attr, n_classes, device=y.device)
+    y = y.long()
+    y_cat[torch.arange(batch_size).unsqueeze(-1), torch.arange(n_attr), y] = 1
+    return y_cat

@@ -12,4 +12,4 @@ class FaderNetwork(nn.Module):
     def forward(self, x, attributes):
         latent = self.encoder(x)  # [batch_size, 512, 2, 2]
         reconstructed = self.decoder(latent, attributes)  # [batch_size, 3, 256, 256]
-        return reconstructed
+        return latent, reconstructed
