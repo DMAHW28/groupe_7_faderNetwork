@@ -60,17 +60,9 @@ class Decoder(nn.Module) :
         decoder_input = torch.cat([latent_code, attributes_onehot], dim=1)  
         
 
-        # On passe chaque couche du décodeur
-        for i, layer in enumerate(self.decoder):
-            # Ajout des attributs à chaque étape (sauf la dernière couche) 
-            if isinstance(layer, nn.ConvTranspose2d) and i != len(self.decoder) - 1:
-                decoder_input = torch.cat([decoder_input, attributes_onehot], dim=1)
-        
-            # Passage de l'entrée dans la couche actuelle
-            decoder_input = layer(decoder_input)
-    
-        # La sortie finale
-        return decoder_input
+        # On passe dans le décodeur
+        output = self.decoder(decoder_input)
+        return output
 
 
 if __name__ == "__main__":
