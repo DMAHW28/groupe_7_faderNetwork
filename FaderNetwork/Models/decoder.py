@@ -64,13 +64,22 @@ import torch.nn as nn
         output = self.decoder(decoder_input)
         return output"""
 
+# On crée la classe Décoder
 class Decoder(nn.Module):
     def __init__(self, latent_dim=512, num_attributes=3):
         super(Decoder, self).__init__()
+
+        # On définit les dimensions utilisées dans le décodeur
+        # latent_dim représente la taille de l'espace latent
+        # num_attributes est le nombre d'attributs binaires
+        # attribute_dim correspond à 2 * num_attributes car chaque attribut est codé en one-hot
+        # input_dim, il s'agit de la dimension d'entrée pour la première couche du décodeur
         self.num_attributes = num_attributes
         self.attribute_dim = 2*num_attributes
         self.input_dim = latent_dim + self.attribute_dim
 
+        # On code l'architecture en suivant les paramètres pris par l'article comme la taille du kernel, du stride...
+        # Chaque couche reçoit les attributs concaténés avec les features issues de la couche précédente
         self.dec1 = self.layer_decoder(canal=self.input_dim , filter_size=512)
         self.dec2 = self.layer_decoder(canal=512 + self.attribute_dim, filter_size=512)
         self.dec3 = self.layer_decoder(canal=512 + self.attribute_dim, filter_size=256)
@@ -84,6 +93,7 @@ class Decoder(nn.Module):
         
     def forward(self, latent, attributes):
         batch_size = latent.size(0)
+        # On rajoute des dimensions spatiales comme la hauteur et la largeur representé par (dim = 2 et 3) 
         attributes = attributes.unsqueeze(2).unsqueeze(3)
         input_1 = torch.cat([latent, attributes.expand(batch_size, self.attribute_dim, latent.size(2), latent.size(2))], 1)
 
