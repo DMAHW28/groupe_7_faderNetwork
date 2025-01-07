@@ -1,4 +1,4 @@
-import torch
+"""import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
@@ -165,4 +165,25 @@ class Discriminator(nn.Module):
             assert x.size()[1:] == (self.img_fm, self.img_sz, self.img_sz)
             conv_output = self.conv_layers(x)
             assert conv_output.size() == (x.size(0), self.conv_out_fm, 1, 1)
-            return self.proj_layers(conv_output.view(x.size(0), self.conv_out_fm))
+            return self.proj_layers(conv_output.view(x.size(0), self.conv_out_fm))"""
+
+import torch.nn as nn
+        
+class Discriminator(nn.Module):
+    def __init__(self, latent_channels=512, hidden = 512, n_attr = 40, attributes=[]):
+        self.attributes = attributes
+        self.n_attr = n_attr
+        super(Discriminator, self).__init__()
+        self.latent = nn.Sequential(
+            #première couche C16, la dimension de l'image est réduite de 256 -> 128
+            nn.Conv2d(latent_channels, 512, kernel_size=4, stride=2, padding=1),   
+            nn.BatchNorm2d(512),
+            nn.LeakyReLU(0.2, inplace=True),
+            nn.Flatten(),
+            nn.Linear(latent_channels, hidden),
+            nn.LeakyReLU(0.2, inplace=True),
+            nn.Linear(hidden, 2*n_attr),
+        )
+
+    def forward(self, x):
+        return self.latent(x)
