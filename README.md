@@ -81,17 +81,17 @@ This project requires the following Python libraries:
 ## Usage
 
 ### Preprocessing
-Is done before the training in the training script.
+Preprocessing done before the training in the training script.
 
 
 ### Training
-Train the model using the provided training script:
+The process for training is detailed in the notebook : 
 ```bash
 Train.ipynb
 ```
 
 ### Visualization
-Use the visualization tools in `Plot/` to generate plots or visualize results:
+To visualize correctly and test the model go to :
 ```bash
 Test.ipynb
 ```
