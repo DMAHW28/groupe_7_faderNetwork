@@ -124,9 +124,9 @@ python Plot/affichage.py
 
 ## Contributors
 - **Team Groupe 7**:
-  - Khouz360 Khouzema EMADALY
-  - DavN24
-  - DMAHW28
-  - nlebel18
+  - Khouz360 (Khouzema EMADALY)
+  - DavN24 (David NODIER) 
+  - DMAHW28 (Marc DRO)
+  - nlebel18 (Nathalie LEBEL)
 
 For any questions or feedback, feel free to reach out.
