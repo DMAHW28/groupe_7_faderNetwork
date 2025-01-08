@@ -77,17 +77,12 @@ This project requires the following Python libraries:
    pip install -r requirements.txt
    ```
 
-3. Download the CelebA dataset and place it in the `Data/` directory.
-
----
 
 ## Usage
 
 ### Preprocessing
-Run the preprocessing script to prepare the dataset:
-```bash
-python Data/preprocess.py
-```
+Is done before the training in the training script.
+
 
 ### Training
 Train the model using the provided training script:
