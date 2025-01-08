@@ -92,13 +92,13 @@ python Data/preprocess.py
 ### Training
 Train the model using the provided training script:
 ```bash
-python Training/train.py
+Train.ipynb
 ```
 
 ### Visualization
 Use the visualization tools in `Plot/` to generate plots or visualize results:
 ```bash
-python Plot/affichage.py
+Test.ipynb
 ```
 
 ---
